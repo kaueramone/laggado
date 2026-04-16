@@ -100,11 +100,14 @@ func main() {
 		fmt.Println(cfg.publicIP)
 	}
 
-	// ── Read WireGuard server public key ──────────────────────────────────────
-	serverPubKey := getWGPubKey(cfg.wgInterface)
+	// ── Read WireGuard server public key (retry for 30s after boot) ──────────
+	fmt.Printf("Aguardando interface WireGuard %q...\n", cfg.wgInterface)
+	serverPubKey := waitForWGPubKey(cfg.wgInterface, 30*time.Second)
 	if serverPubKey == "" {
-		fatalf("Não foi possível ler a chave pública do WireGuard interface %q.\n"+
-			"Verifique: sudo wg show %s", cfg.wgInterface, cfg.wgInterface)
+		fatalf("Não foi possível ler a chave pública do WireGuard interface %q após 30s.\n"+
+			"Verifique: sudo wg show %s\n"+
+			"Certifique-se de que wg-quick@%s.service está ativo.",
+			cfg.wgInterface, cfg.wgInterface, cfg.wgInterface)
 	}
 
 	endpoint := fmt.Sprintf("%s:%d", cfg.publicIP, cfg.wgPort)
@@ -160,14 +163,25 @@ func main() {
 	disc.Country     = cfg.country
 	disc.Version     = version
 
-	fmt.Print("[discovery] Registrando no Lagger Network... ")
-	ctx := context.Background()
-	if err := disc.Register(ctx); err != nil {
-		fmt.Printf("AVISO: %v\n", err)
-		fmt.Println("           (continuando — tentará novamente em 2 min)")
-	} else {
-		fmt.Println("OK ✓")
-		fmt.Printf("           ID: %s\n", disc.LaggerID())
+	// Retry registration up to 5 times (network might not be ready right away)
+	fmt.Printf("[discovery] Worker URL: %s\n", disc.WorkerURL())
+	registered := false
+	for attempt := 1; attempt <= 5; attempt++ {
+		fmt.Printf("[discovery] Registrando no Lagger Network... (tentativa %d/5)\n", attempt)
+		ctx := context.Background()
+		if err := disc.Register(ctx); err != nil {
+			fmt.Printf("[discovery] AVISO tentativa %d: %v\n", attempt, err)
+			if attempt < 5 {
+				time.Sleep(time.Duration(attempt*3) * time.Second)
+			}
+		} else {
+			fmt.Printf("[discovery] Registrado com sucesso! ID: %s\n", disc.LaggerID())
+			registered = true
+			break
+		}
+	}
+	if !registered {
+		fmt.Println("[discovery] Não foi possível registrar após 5 tentativas. Continuando (tentará novamente em 2 min via heartbeat).")
 	}
 
 	fmt.Println()
@@ -236,6 +250,21 @@ func getWGPubKey(iface string) string {
 		return ""
 	}
 	return strings.TrimSpace(string(out))
+}
+
+// waitForWGPubKey retries reading the WireGuard public key until timeout.
+// This handles the race between wg-quick@wg0 and this service at boot.
+func waitForWGPubKey(iface string, timeout time.Duration) string {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		key := getWGPubKey(iface)
+		if key != "" {
+			return key
+		}
+		fmt.Printf("  Interface %q ainda não está pronta, aguardando...\n", iface)
+		time.Sleep(2 * time.Second)
+	}
+	return ""
 }
 
 func printHelp() {

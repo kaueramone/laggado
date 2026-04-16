@@ -179,6 +179,9 @@ func (c *Client) Leave() {
 	}
 }
 
+// WorkerURL returns the registry URL being used.
+func (c *Client) WorkerURL() string { return c.workerURL }
+
 // IsLagger returns true if this node is currently registered and active.
 func (c *Client) IsLagger() bool {
 	c.mu.Lock()
