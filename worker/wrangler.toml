@@ -1,0 +1,14 @@
+name = "laggado-laggers"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Free tier Workers plan — zero cost
+# Limits: 100k requests/day, 10ms CPU/request
+# KV: 100k reads/day, 1k writes/day (suporta ~20 Laggers simultâneos com heartbeat 2min)
+
+[[kv_namespaces]]
+binding = "LAGGERS"
+id = "96312c77f3834ff2ab47e4a841454b60"
+
+[vars]
+ENVIRONMENT = "production"

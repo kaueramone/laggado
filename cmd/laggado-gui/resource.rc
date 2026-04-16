@@ -1,0 +1,38 @@
+// Windows resource script — embeds the LAGGADO icon into the .exe
+// Compile with: windres -o resource.syso resource.rc
+// (windres is in C:\msys64\mingw64\bin\windres.exe)
+
+#include <windows.h>
+
+// Application icon — IDI_APPLICATION = 32512
+IDI_APPLICATION ICON "../../assets/laggado.ico"
+
+// Version information
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     0,2,0,0
+PRODUCTVERSION  0,2,0,0
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Kaue Da Costa Pacheco"
+            VALUE "FileDescription",  "LAGGADO - Game Route Optimizer"
+            VALUE "FileVersion",      "0.2.0.0"
+            VALUE "InternalName",     "LAGGADO"
+            VALUE "LegalCopyright",   "Copyright (C) 2026 Kaue Da Costa Pacheco"
+            VALUE "OriginalFilename", "LAGGADO.exe"
+            VALUE "ProductName",      "LAGGADO"
+            VALUE "ProductVersion",   "0.2.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

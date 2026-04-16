@@ -1,0 +1,29 @@
+# Build output
+dist/
+*.exe
+*.syso
+
+# WireGuard configs gerados
+cmd/laggado-gui/ui/wg/
+*.conf
+
+# Go
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dados locais do app (gerados em runtime)
+~/.laggado/
+
+# Claude Cowork internal settings
+.claude/
+
+# Wrangler cache
+worker/.wrangler/

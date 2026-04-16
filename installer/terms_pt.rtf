@@ -1,0 +1,101 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1046
+{\fonttbl{\f0\fswiss\fcharset0 Arial;}{\f1\fmodern\fcharset0 Courier New;}{\f2\fswiss\fcharset0 Arial;}}
+{\colortbl;\red0\green0\blue0;\red0\green100\blue200;\red180\green0\blue0;}
+{\*\generator LAGGADO Installer;}
+\viewkind4\uc1\pard\sa200\sl276\slmult1
+
+\f0\fs28\b\cf2 LAGGADO \endash  Termos de Uso e Licen\'e7a\b0\cf1\fs20\par
+
+\fs16 Vers\'e3o 1.0 \endash  Abril de 2026\par
+\par
+
+\fs20\b 1. SOBRE O LAGGADO\b0\par
+\fs18
+LAGGADO \'e9 um software de c\'f3digo aberto (open-source) que otimiza a lat\'eancia de jogos online por meio de uma rede P2P comunit\'e1ria de "Laggers". O programa utiliza tunelamento WireGuard com split-tunneling para rotear o tr\'e1fego do jogo atrav\'e9s do melhor caminho dispon\'edvel na comunidade.\par
+\par
+Autor: Kaue Da Costa Pacheco\par
+Contato: kaueramone@live.com\par
+\par
+
+\fs20\b 2. LICEN\'c7A DE USO\b0\par
+\fs18
+Este software \'e9 distribu\'eddo gratuitamente sob os termos da licen\'e7a MIT. Voc\'ea pode usar, copiar, modificar e distribuir livremente, desde que mantenha os cr\'e9ditos originais. O c\'f3digo-fonte est\'e1 dispon\'edvel publicamente.\par
+\par
+\b USO COMERCIAL:\b0  Proibido o uso do nome "LAGGADO" ou desta marca em produtos comerciais sem autoriza\'e7\'e3o expressa do autor.\par
+\par
+
+\fs20\b 3. REQUISITOS NECESS\'c1RIOS\b0\par
+\fs18
+Ao instalar e utilizar o LAGGADO, voc\'ea confirma que:\par
+\par
+\pard\li400\sa100\sl276\slmult1
+\b a)\b0  Possui Windows 10 ou Windows 11 (64-bit);\par
+\b b)\b0  Autoriza a instala\'e7\'e3o do WireGuard, se necess\'e1rio;\par
+\b c)\b0  Tem ci\'eancia de que o programa requer \b privil\'e9gios de Administrador\b0  para manipular rotas de rede via WireGuard;\par
+\b d)\b0  Tem 18 anos ou mais, ou possui autoriza\'e7\'e3o de um respons\'e1vel legal.\par
+\pard\sa200\sl276\slmult1\par
+
+\fs20\b 4. REDE COMUNIT\'c1RIA DE LAGGERS\b0\par
+\fs18
+Ao abrir o LAGGADO, seu computador \b pode\b0  se tornar um "Lagger" \endash  um n\'f3 de relay da rede comunit\'e1ria. Isso significa:\par
+\par
+\pard\li400\sa100\sl276\slmult1
+\b a)\b0  Sua conex\'e3o de internet pode ser parcialmente utilizada para rotear tr\'e1fego de outros jogadores;\par
+\b b)\b0  Somente dados de jogo (pacotes UDP/TCP do servidor do jogo) s\'e3o roteados \endash  nunca navega\'e7\'e3o ou outros dados pessoais;\par
+\b c)\b0  Voc\'ea pode desativar a fun\'e7\'e3o Lagger nas Configura\'e7\'f5es do aplicativo;\par
+\b d)\b0  O LAGGADO n\'e3o se responsabiliza pelo uso indevido da rede por terceiros.\par
+\pard\sa200\sl276\slmult1\par
+
+\fs20\b 5. DADOS E PRIVACIDADE\b0\par
+\fs18
+O LAGGADO coleta e transmite apenas os dados m\'ednimos necess\'e1rios para o funcionamento da rede:\par
+\par
+\pard\li400\sa100\sl276\slmult1
+\b\f1\'95\b0\f0  Chave p\'fablica WireGuard (gerada localmente, nunca exposta publicamente em listagens);\par
+\b\f1\'95\b0\f0  Endere\'e7o IP e porta WireGuard (vistos apenas por Laggers que se conectarem a voc\'ea);\par
+\b\f1\'95\b0\f0  Regi\'e3o de jogo selecionada (SA, US, EU, ASIA);\par
+\b\f1\'95\b0\f0  Cidade e pa\'eds (opcionais, informados voluntariamente).\par
+\pard\sa200\sl276\slmult1\par
+\b N\'c3O coletamos:\b0  nome, e-mail, CPF, informa\'e7\'f5es financeiras ou qualquer dado pessoal identific\'e1vel.\par
+\par
+Todos os dados s\'e3o processados no Cloudflare Workers (reg\'e3o UE) e expiram automaticamente em 5 minutos sem heartbeat.\par
+\par
+
+\fs20\b 6. WIREGUARD E ROTAS DE REDE\b0\par
+\fs18
+O LAGGADO utiliza o WireGuard para criar um t\'famel criptografado entre voc\'ea e o servidor do jogo. Para tal:\par
+\par
+\pard\li400\sa100\sl276\slmult1
+\b a)\b0  Ser\'e3o adicionadas entradas na tabela de rotas do Windows (\f1 route ADD\f0 ) durante a conex\'e3o;\par
+\b b)\b0  Todas as rotas s\'e3o removidas automaticamente ao desconectar ou fechar o aplicativo;\par
+\b c)\b0  Em caso de falha inesperada, execute \f1 route DELETE\f0  ou reinicie o Windows para limpar as rotas;\par
+\b d)\b0  O LAGGADO nunca altera as configura\'e7\'f5es de rede permanentes do sistema.\par
+\pard\sa200\sl276\slmult1\par
+
+\fs20\b 7. EXCLUS\'c3O DE GARANTIAS\b0\par
+\fs18
+O LAGGADO \'e9 fornecido "como est\'e1" (as-is), sem qualquer garantia expressa ou impl\'edcita. O autor n\'e3o se responsabiliza por:\par
+\par
+\pard\li400\sa100\sl276\slmult1
+\f1\'95\f0  Danos ao sistema operacional ou configura\'e7\'f5es de rede;\par
+\f1\'95\f0  Interrup\'e7\'e3o do servi\'e7o de internet;\par
+\f1\'95\f0  Perda de dados ou desempenho do computador;\par
+\f1\'95\f0  Viola\'e7\'f5es dos termos de uso de servi\'e7os de jogos;\par
+\f1\'95\f0  Banimentos em jogos decorrentes do uso da ferramenta.\par
+\pard\sa200\sl276\slmult1\par
+\cf3\b ATEN\'c7\'c3O:\b0\cf1  Verifique se o uso de aceleradores de rede \'e9 permitido nos termos de servi\'e7o do seu jogo antes de usar o LAGGADO.\par
+\par
+
+\fs20\b 8. MODIFICA\'c7\'d5ES E ATUALIZA\'c7\'d5ES\b0\par
+\fs18
+O autor reserva o direito de modificar estes termos a qualquer momento. O uso continuado do software ap\'f3s uma atualiza\'e7\'e3o implica aceita\'e7\'e3o dos novos termos. Sempre verifique a vers\'e3o mais recente no reposit\'f3rio oficial.\par
+\par
+
+\fs20\b 9. ACEITA\'c7\'c3O\b0\par
+\fs18
+Ao clicar em \b "Aceito"\b0  e prosseguir com a instala\'e7\'e3o, voc\'ea declara ter lido, compreendido e concordado com todos os termos acima.\par
+\par
+\par
+\fs16\cf2\b LAGGADO \'e9 free. Jogue melhor. Pague zero.\b0\cf1\par
+\par
+}
