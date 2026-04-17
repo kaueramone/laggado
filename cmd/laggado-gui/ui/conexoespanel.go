@@ -381,12 +381,13 @@ func showAddGameDialog(state *AppState, win fyne.Window, onAdd func(store.GameCo
 	regionSelect := widget.NewSelect([]string{"AUTO", "SA", "US", "EU", "ASIA"}, nil)
 	regionSelect.Selected = "AUTO"
 
-	content := container.NewVBox(
+	// Use Border layout so resultList fills all remaining height in the dialog
+	topContent := container.NewVBox(
 		searchEntry,
-		widget.NewLabel("Região:"),
-		regionSelect,
-		container.NewPadded(resultList),
+		container.NewBorder(nil, nil, widget.NewLabel("Região:"), nil, regionSelect),
+		widget.NewSeparator(),
 	)
+	content := container.NewBorder(topContent, nil, nil, nil, resultList)
 
 	d := dialog.NewCustomConfirm("Adicionar Jogo", "Adicionar", "Cancelar", content, func(ok bool) {
 		if !ok || selectedGame == nil {

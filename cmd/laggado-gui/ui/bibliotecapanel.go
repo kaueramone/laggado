@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	// os used by scanInstalledGames
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -42,17 +43,16 @@ func NewBibliotecaPanel(state *AppState) fyne.CanvasObject {
 	}
 	filtered = all
 
+	// Use OnSelected to handle add — more reliable than updating OnTapped inside UpdateItem
 	gameList := widget.NewList(
 		func() int { return len(filtered) },
 		func() fyne.CanvasObject {
-			icon := canvas.NewImageFromResource(placeholderGameIcon(0))
-			icon.FillMode = canvas.ImageFillContain
-			icon.SetMinSize(fyne.NewSize(32, 32))
 			name := canvas.NewText("Game Name", ColorTextPrim)
 			name.TextSize = 13
-			btn := widget.NewButton(T("lib.add"), func() {})
-			btn.Importance = widget.LowImportance
-			return container.NewBorder(nil, nil, icon, btn, name)
+			added := canvas.NewText("", ColorGreen)
+			added.TextSize = 11
+			// HBox: predictable index order [0]=name [1]=added
+			return container.NewHBox(name, added)
 		},
 		func(id widget.ListItemID, obj fyne.CanvasObject) {
 			if id >= len(filtered) {
@@ -60,34 +60,44 @@ func NewBibliotecaPanel(state *AppState) fyne.CanvasObject {
 			}
 			g := filtered[id]
 			row := obj.(*fyne.Container)
-			icon := row.Objects[1].(*canvas.Image)
 			name := row.Objects[0].(*canvas.Text)
-			btn := row.Objects[2].(*widget.Button)
+			added := row.Objects[1].(*canvas.Text)
 
 			name.Text = g.Name
 			name.Refresh()
 
-			icon.Resource = placeholderGameIcon(g.ID)
-			if g.IconPath != "" {
-				if raw, err := os.ReadFile(g.IconPath); err == nil {
-					icon.Resource = fyne.NewStaticResource(fmt.Sprintf("g%d.png", g.ID), raw)
+			// Show "✓ Adicionado" if already in connections
+			already := false
+			for _, c := range state.DB.GetConnections() {
+				if c.GameID == g.ID {
+					already = true
+					break
 				}
 			}
-			icon.Refresh()
-
-			btn.OnTapped = func() {
-				state.DB.AddConnection(store.GameConnection{
-					GameID:   g.ID,
-					GameName: g.Name,
-					GameExe:  gameNameToExeSlug(g.Name),
-					Enabled:  true,
-					Region:   "AUTO",
-				})
-				state.DB.Save()
+			if already {
+				added.Text = "  ✓"
+				added.Color = ColorGreen
+			} else {
+				added.Text = ""
 			}
+			added.Refresh()
 		},
 	)
-	_ = gameList // SetMinSize not available on widget.List; sizing handled by Border layout
+	gameList.OnSelected = func(id widget.ListItemID) {
+		if id >= len(filtered) {
+			return
+		}
+		g := filtered[id]
+		state.DB.AddConnection(store.GameConnection{
+			GameID:   g.ID,
+			GameName: g.Name,
+			GameExe:  gameNameToExeSlug(g.Name),
+			Enabled:  true,
+			Region:   "AUTO",
+		})
+		state.DB.Save()
+		gameList.Refresh()
+	}
 
 	updateList := func(query string) {
 		if strings.TrimSpace(query) == "" {

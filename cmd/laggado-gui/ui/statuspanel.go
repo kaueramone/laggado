@@ -102,19 +102,47 @@ func NewStatusPanel(state *AppState) fyne.CanvasObject {
 
 	stopCh := make(chan struct{}, 1)
 
+	startMonitor := func() {
+		if monitoring {
+			return
+		}
+		monitoring = true
+		monBtn.SetText(T("status.monitor.stop"))
+		monBtn.Importance = widget.DangerImportance
+		go liveMonitor(state, stopCh, pingVal, jitterVal, lossVal)
+	}
+
+	stopMonitor := func() {
+		if !monitoring {
+			return
+		}
+		monitoring = false
+		stopCh <- struct{}{}
+		monBtn.SetText(T("status.monitor.start"))
+		monBtn.Importance = widget.HighImportance
+	}
+
 	monBtn.OnTapped = func() {
 		if !monitoring {
-			monitoring = true
-			monBtn.SetText(T("status.monitor.stop"))
-			monBtn.Importance = widget.DangerImportance
-			go liveMonitor(state, stopCh, pingVal, jitterVal, lossVal)
+			startMonitor()
 		} else {
-			monitoring = false
-			stopCh <- struct{}{}
-			monBtn.SetText(T("status.monitor.start"))
-			monBtn.Importance = widget.HighImportance
+			stopMonitor()
 		}
 	}
+
+	// Auto-start monitor when a game connection is active
+	go func() {
+		ticker := time.NewTicker(2 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			state.connMu.Lock()
+			hasConn := state.ActiveConn != nil
+			state.connMu.Unlock()
+			if hasConn && !monitoring {
+				startMonitor()
+			}
+		}
+	}()
 
 	monitorBg := canvas.NewRectangle(ColorCard)
 	monitorBg.CornerRadius = 8
