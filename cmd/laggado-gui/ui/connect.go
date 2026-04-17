@@ -294,14 +294,23 @@ func laggerRelayAPI(l discovery.LaggerInfo) string {
 	return fmt.Sprintf("http://%s:%d", host, defaultRelayPort)
 }
 
-// probeLagger measures TCP round-trip time to the Lagger's WireGuard endpoint.
-// Returns 0 if unreachable.
+// probeLagger measures TCP round-trip time to the Lagger's relay HTTP API.
+// IMPORTANT: WireGuard uses UDP — we cannot TCP-probe port 51820.
+// Instead we probe the relay HTTP API (port 7735) which uses TCP.
+// Returns 0 if unreachable within probeTimeout.
 func probeLagger(endpoint string) time.Duration {
 	if endpoint == "" {
 		return 0
 	}
+	// Derive relay API address from WireGuard endpoint (same host, port 7735)
+	host, _, err := net.SplitHostPort(endpoint)
+	if err != nil || host == "" {
+		return 0
+	}
+	relayAddr := fmt.Sprintf("%s:%d", host, defaultRelayPort)
+
 	start := time.Now()
-	conn, err := net.DialTimeout("tcp", endpoint, probeTimeout)
+	conn, err := net.DialTimeout("tcp", relayAddr, probeTimeout)
 	elapsed := time.Since(start)
 	if err != nil {
 		return 0

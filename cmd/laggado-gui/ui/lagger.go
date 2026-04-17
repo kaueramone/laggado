@@ -120,10 +120,7 @@ func tryBecomeLagger(state *AppState) error {
 		disc = discovery.NewClient(workerURL, state.DataDir)
 	}
 
-	region := state.DB.Config.PreferredRegion
-	if region == "" {
-		region = "SA"
-	}
+	region := "SA" // default — auto-detect via geo in a future version
 
 	disc.WgPublicKey = srvPubKey
 	disc.Endpoint    = endpoint
