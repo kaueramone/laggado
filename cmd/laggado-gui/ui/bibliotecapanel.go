@@ -87,7 +87,7 @@ func NewBibliotecaPanel(state *AppState) fyne.CanvasObject {
 			}
 		},
 	)
-	gameList.SetMinSize(fyne.NewSize(0, 400))
+	_ = gameList // SetMinSize not available on widget.List; sizing handled by Border layout
 
 	updateList := func(query string) {
 		if strings.TrimSpace(query) == "" {
