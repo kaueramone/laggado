@@ -20,6 +20,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -92,10 +93,18 @@ func NewClient(workerURL, dataDir string) *Client {
 	if workerURL == "" {
 		workerURL = DefaultWorkerURL
 	}
+	// Force TCP4 (IPv4-only) dialer — some VPS environments have broken IPv6
+	// which causes Go's default dual-stack dialer to hang indefinitely.
+	dialer := &net.Dialer{Timeout: 10 * time.Second}
+	transport := &http.Transport{
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return dialer.DialContext(ctx, "tcp4", addr)
+		},
+	}
 	return &Client{
 		workerURL:   workerURL,
 		dataDir:     dataDir,
-		http:        &http.Client{Timeout: 10 * time.Second},
+		http:        &http.Client{Timeout: 15 * time.Second, Transport: transport},
 		heartbeatCh: make(chan struct{}, 1),
 		stopCh:      make(chan struct{}),
 	}
