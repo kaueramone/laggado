@@ -154,6 +154,58 @@ func NewConfigPanel(state *AppState) fyne.CanvasObject {
 	wgStatusLabel := canvas.NewText(wgStatus, ColorTextDim)
 	wgStatusLabel.TextSize = 11
 
+	// ── Lagger Network ────────────────────────────────────────────
+	lnTitle := canvas.NewText(T("config.lagger.title"), ColorTextSec)
+	lnTitle.TextSize = 12
+
+	// Status badge
+	lnStatusText := "⬤  " + T("config.lagger.status.inactive")
+	lnStatusColor := ColorTextDim
+	if state.AmIALagger {
+		lnStatusText = "⬤  " + T("config.lagger.status.active")
+		lnStatusColor = ColorGreen
+	}
+	lnStatus := canvas.NewText(lnStatusText, lnStatusColor)
+	lnStatus.TextSize = 13
+	lnStatus.TextStyle = fyne.TextStyle{Bold: true}
+
+	lnDesc := canvas.NewText(T("config.lagger.desc"), ColorTextDim)
+	lnDesc.TextSize = 11
+
+	// Requirements — simple language for leigos
+	lnReqItems := []struct{ icon, text, key string }{
+		{"✅", T("config.lagger.req.app"), ""},
+		{"✅", T("config.lagger.req.wg"), ""},
+		{"✅", T("config.lagger.req.upnp"), ""},
+	}
+	lnReqBox := container.NewVBox()
+	for _, item := range lnReqItems {
+		color := ColorTextSec
+		t := canvas.NewText(item.icon+"  "+item.text, color)
+		t.TextSize = 11
+		lnReqBox.Add(t)
+	}
+
+	// Tip when not active
+	lnTip := canvas.NewText("", ColorTextDim)
+	lnTip.TextSize = 11
+	if !state.AmIALagger {
+		lnTip.Text = T("config.lagger.tip")
+		lnTip.Color = ColorYellow
+	}
+
+	lnBg := canvas.NewRectangle(ColorCard)
+	lnBg.CornerRadius = 8
+	lnCard := container.NewStack(lnBg, container.NewPadded(container.NewVBox(
+		lnStatus,
+		spacer(4),
+		lnDesc,
+		spacer(6),
+		lnReqBox,
+		spacer(4),
+		lnTip,
+	)))
+
 	// ── Anti-cheat compatibility ──────────────────────────────────
 	acTitle := canvas.NewText(T("config.ac.title"), ColorTextSec)
 	acTitle.TextSize = 12
@@ -221,6 +273,8 @@ func NewConfigPanel(state *AppState) fyne.CanvasObject {
 		section(pingTitle, makeDesc("config.ping.desc"), pingForm, savePingBtn),
 		sep(),
 		section(wgTitle, makeDesc("config.wg.desc"), wgStatusLabel),
+		sep(),
+		section(lnTitle, lnCard),
 		sep(),
 		section(acTitle, makeDesc("config.ac.desc"), acCard),
 		sep(),
