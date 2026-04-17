@@ -266,9 +266,14 @@ func (c *Client) heartbeatLoop() {
 }
 
 func (c *Client) sendRegister() error {
+	// Get ID first (acquires/releases c.mu internally) before locking again.
+	// This avoids a deadlock: LaggerID() also locks c.mu, and sync.Mutex
+	// is not reentrant in Go.
+	id := c.LaggerID()
+
 	c.mu.Lock()
 	payload := map[string]interface{}{
-		"id":          c.LaggerID(),
+		"id":          id,
 		"region":      c.Region,
 		"wgPublicKey": c.WgPublicKey,
 		"endpoint":    c.Endpoint,
